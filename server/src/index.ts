@@ -41,3 +41,41 @@ async function shutdown() {
 
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
+
+import dns from "node:dns/promises";
+import net from "node:net";
+
+async function testCognoNetwork() {
+  const host = "db-6d64716d2.databases.cognodb.com";
+  const port = 7687;
+
+  try {
+    const dnsResult = await dns.lookup(host);
+
+    console.log("COGNODB DNS:", dnsResult);
+
+    const socket = net.createConnection({
+      host,
+      port,
+      timeout: 10000,
+    });
+
+    socket.on("connect", () => {
+      console.log("COGNODB TCP: CONNECTED");
+      socket.destroy();
+    });
+
+    socket.on("timeout", () => {
+      console.error("COGNODB TCP: TIMEOUT");
+      socket.destroy();
+    });
+
+    socket.on("error", (error) => {
+      console.error("COGNODB TCP ERROR:", error);
+    });
+  } catch (error) {
+    console.error("COGNODB DNS ERROR:", error);
+  }
+}
+
+testCognoNetwork();

@@ -45,37 +45,33 @@ process.on("SIGTERM", shutdown);
 import dns from "node:dns/promises";
 import net from "node:net";
 
-async function testCognoNetwork() {
-  const host = "db-6d64716d2.databases.cognodb.com";
-  const port = 7687;
+import tls from "node:tls";
 
-  try {
-    const dnsResult = await dns.lookup(host);
+function testCognoTLS() {
+  const socket = tls.connect({
+    host: "db-6d64716d2.databases.cognodb.com",
+    port: 7687,
+    servername: "db-6d64716d2.databases.cognodb.com",
+    rejectUnauthorized: false,
+    timeout: 10000,
+  });
 
-    console.log("COGNODB DNS:", dnsResult);
+  socket.on("secureConnect", () => {
+    console.log("COGNODB TLS: CONNECTED");
+    console.log("TLS VERSION:", socket.getProtocol());
+    console.log("TLS AUTHORIZED:", socket.authorized);
+    console.log("TLS CIPHER:", socket.getCipher());
+    socket.destroy();
+  });
 
-    const socket = net.createConnection({
-      host,
-      port,
-      timeout: 10000,
-    });
+  socket.on("error", (error) => {
+    console.error("COGNODB TLS ERROR:", error);
+  });
 
-    socket.on("connect", () => {
-      console.log("COGNODB TCP: CONNECTED");
-      socket.destroy();
-    });
-
-    socket.on("timeout", () => {
-      console.error("COGNODB TCP: TIMEOUT");
-      socket.destroy();
-    });
-
-    socket.on("error", (error) => {
-      console.error("COGNODB TCP ERROR:", error);
-    });
-  } catch (error) {
-    console.error("COGNODB DNS ERROR:", error);
-  }
+  socket.on("timeout", () => {
+    console.error("COGNODB TLS TIMEOUT");
+    socket.destroy();
+  });
 }
 
-testCognoNetwork();
+testCognoTLS();

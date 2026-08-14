@@ -33,15 +33,29 @@ function getDriver(): Driver {
 }
 
 /** Verifies connectivity without throwing; used by the /health route. */
-export async function checkConnection(): Promise<{ ok: boolean; message: string }> {
+export async function checkConnection(): Promise<{
+  ok: boolean;
+  message: string;
+}> {
   try {
     const d = getDriver();
     await d.verifyConnectivity();
-    return { ok: true, message: "Connected to CognoDB." };
+
+    return {
+      ok: true,
+      message: "Connected to CognoDB.",
+    };
   } catch (err) {
+    console.error("COGNODB VERIFY ERROR:", err);
+
     const message =
-      initError ?? (err instanceof Error ? err.message : "Could not reach the database.");
-    return { ok: false, message };
+      initError ??
+      (err instanceof Error ? err.message : "Could not reach the database.");
+
+    return {
+      ok: false,
+      message,
+    };
   }
 }
 
@@ -52,7 +66,7 @@ export async function checkConnection(): Promise<{ ok: boolean; message: string 
  */
 export async function withSession<T>(
   work: (session: Session) => Promise<T>,
-  mode: SessionMode = neo4j.session.READ
+  mode: SessionMode = neo4j.session.READ,
 ): Promise<T> {
   let session: Session;
   try {
@@ -60,7 +74,7 @@ export async function withSession<T>(
     session = d.session({ defaultAccessMode: mode });
   } catch (err) {
     throw new DatabaseUnavailableError(
-      err instanceof Error ? err.message : "Database is not configured."
+      err instanceof Error ? err.message : "Database is not configured.",
     );
   }
 
@@ -68,9 +82,10 @@ export async function withSession<T>(
     return await work(session);
   } catch (err: any) {
     if (isConnectivityError(err)) {
+      console.error("COGNODB CONNECTION ERROR:", err);
+
       throw new DatabaseUnavailableError(
-        "Could not reach CognoDB. Check that your instance is running and your " +
-          "NEO4J_URI / NEO4J_PASSWORD are correct."
+        "Could not reach CognoDB. Check Render logs for the actual database error.",
       );
     }
     throw err;

@@ -76,9 +76,15 @@ export class ApiError extends Error {
 async function request<T>(path: string): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(`/api${path}`);
+    const API_URL = import.meta.env.VITE_API_URL || "";
+
+    res = await fetch(`${API_URL}/api${path}`);
   } catch {
-    throw new ApiError(0, "database_unavailable", "Could not reach the SkillPath server.");
+    throw new ApiError(
+      0,
+      "database_unavailable",
+      "Could not reach the SkillPath server.",
+    );
   }
 
   if (!res.ok) {
@@ -107,13 +113,19 @@ export const api = {
   career: (id: string) => request<CareerDetail>(`/careers/${id}`),
   courses: () => request<Course[]>("/courses"),
   skillGap: (personId: string, careerId: string) =>
-    request<SkillGapEntry[]>(`/graph/skill-gap?personId=${personId}&careerId=${careerId}`),
+    request<SkillGapEntry[]>(
+      `/graph/skill-gap?personId=${personId}&careerId=${careerId}`,
+    ),
   learningPath: (personId: string, careerId: string) =>
-    request<LearningPath>(`/graph/learning-path?personId=${personId}&careerId=${careerId}`),
+    request<LearningPath>(
+      `/graph/learning-path?personId=${personId}&careerId=${careerId}`,
+    ),
   mentors: (personId: string, careerId: string) =>
-    request<MentorMatch[]>(`/graph/mentors?personId=${personId}&careerId=${careerId}`),
+    request<MentorMatch[]>(
+      `/graph/mentors?personId=${personId}&careerId=${careerId}`,
+    ),
   courseRecommendations: (personId: string, careerId: string) =>
     request<CourseRecommendation[]>(
-      `/graph/course-recommendations?personId=${personId}&careerId=${careerId}`
+      `/graph/course-recommendations?personId=${personId}&careerId=${careerId}`,
     ),
 };

@@ -1,0 +1,121 @@
+:root {
+  /* Paper & ink */
+  --paper: #eef0ea;
+  --paper-raised: #ffffff;
+  --ink: #1c2321;
+  --ink-soft: #4c554f;
+  --ink-faint: #8a9088;
+  --line: #d9dcd1;
+
+  /* Track colors — one per skill category, used consistently as "rail lines" */
+  --track-frontend: #1f7a6c;
+  --track-backend: #2b4c7e;
+  --track-data: #c97f0a;
+  --track-product: #7a3b69;
+  --track-leadership: #a8442a;
+
+  --track-frontend-soft: #e2efec;
+  --track-backend-soft: #e3e9f1;
+  --track-data-soft: #f6e9d6;
+  --track-product-soft: #efe1eb;
+  --track-leadership-soft: #f2e2dc;
+
+  --danger: #a8442a;
+  --danger-soft: #f2e2dc;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-card: 0 1px 2px rgba(28, 35, 33, 0.06), 0 1px 1px rgba(28, 35, 33, 0.04);
+  --shadow-raised: 0 4px 16px rgba(28, 35, 33, 0.1);
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Track helper classes, keyed by skill category string from the API */
+.track-Frontend {
+  --track: var(--track-frontend);
+  --track-soft: var(--track-frontend-soft);
+}
+.track-Backend {
+  --track: var(--track-backend);
+  --track-soft: var(--track-backend-soft);
+}
+.track-Data {
+  --track: var(--track-data);
+  --track-soft: var(--track-data-soft);
+}
+.track-Product {
+  --track: var(--track-product);
+  --track-soft: var(--track-product-soft);
+}
+.track-Leadership {
+  --track: var(--track-leadership);
+  --track-soft: var(--track-leadership-soft);
+}
